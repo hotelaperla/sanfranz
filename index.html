@@ -1,0 +1,695 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Hotel Perla - San Franz | Payment & Booking Dashboard</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Manrope:wght@300;400;500;600;700;800&display=swap');
+
+:root{
+  --bg-900:#0a0b10;
+  --bg-800:#12141c;
+  --bg-700:#181b26;
+  --panel:#141720;
+  --panel-2:#1a1e2a;
+  --line:#2b2f3d;
+  --line-soft:rgba(43,47,61,.5);
+  --gold:#c9a668;
+  --gold-bright:#e8d9b8;
+  --gold-deep:#8f7038;
+  --gold-glow:rgba(201,166,104,.22);
+  --emerald:#4f6f94;
+  --emerald-soft:rgba(79,111,148,.16);
+  --ink:#f3efe6;
+  --muted:#a9a6b3;
+  --muted-2:#6b6875;
+  --green:#3fc98a;
+  --green-bg:rgba(63,201,138,.15);
+  --amber:#f0a84a;
+  --amber-bg:rgba(240,168,74,.15);
+  --red:#f0686f;
+  --red-bg:rgba(240,104,111,.15);
+  --blue:#5aa9e6;
+  --blue-bg:rgba(90,169,230,.15);
+  --purple:#9d7bd8;
+  --purple-bg:rgba(157,123,216,.15);
+  --shadow:0 22px 60px rgba(0,0,0,.5);
+  --radius:18px;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  font-family:'Manrope',sans-serif;
+  background:
+    radial-gradient(1100px 560px at 82% -8%, rgba(201,166,104,.10), transparent 58%),
+    radial-gradient(900px 480px at -8% 108%, rgba(79,111,148,.14), transparent 55%),
+    linear-gradient(165deg,var(--bg-900),var(--bg-800) 55%,#07080c);
+  color:var(--ink);min-height:100vh;-webkit-font-smoothing:antialiased;
+}
+::-webkit-scrollbar{width:10px;height:10px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:linear-gradient(var(--gold-bright),var(--gold) 55%,var(--gold-deep));border-radius:10px}
+
+.app{display:flex;min-height:100vh}
+
+/* Sidebar */
+.sidebar{width:264px;flex-shrink:0;
+  background:linear-gradient(180deg,rgba(26,30,42,.96),rgba(10,11,16,.96));
+  border-right:1px solid var(--line);padding:26px 18px;position:sticky;top:0;height:100vh;
+  display:flex;flex-direction:column;backdrop-filter:blur(10px);z-index:50;position:relative}
+.sidebar::after{content:"";position:absolute;top:0;right:-1px;width:1px;height:100%;
+  background:linear-gradient(180deg,transparent,var(--gold-glow) 30%,var(--gold-glow) 70%,transparent)}
+.brand{display:flex;align-items:center;gap:12px;padding:0 6px 22px;border-bottom:1px solid var(--line);margin-bottom:18px}
+.brand-logo{width:48px;height:48px;border-radius:13px;flex-shrink:0;background:linear-gradient(140deg,var(--gold-bright),var(--gold) 55%,var(--gold-deep));
+  display:grid;place-items:center;font-size:24px;box-shadow:0 6px 20px var(--gold-glow)}
+.brand-text h1{font-family:'Cormorant Garamond',serif;font-size:19px;font-weight:700;line-height:1.05;
+  background:linear-gradient(90deg,var(--gold-bright),var(--gold) 60%,var(--gold-deep));-webkit-background-clip:text;background-clip:text;color:transparent}
+.brand-text span{font-size:9.5px;letter-spacing:2.2px;text-transform:uppercase;color:var(--muted-2)}
+.nav{display:flex;flex-direction:column;gap:4px;flex:1}
+.nav-label{font-size:10px;letter-spacing:1.6px;text-transform:uppercase;color:var(--muted-2);padding:14px 12px 6px}
+.nav-item{display:flex;align-items:center;gap:12px;padding:11px 13px;border-radius:12px;cursor:pointer;
+  color:var(--muted);font-weight:500;font-size:14.5px;transition:.22s;border:1px solid transparent;position:relative}
+.nav-item svg{width:19px;height:19px;flex-shrink:0;stroke:currentColor}
+.nav-item:hover{background:rgba(201,166,104,.07);color:var(--ink)}
+.nav-item.active{background:linear-gradient(90deg,rgba(201,166,104,.16),rgba(201,166,104,.03));color:var(--gold-bright);border-color:rgba(201,166,104,.28)}
+.nav-item.active::before{content:"";position:absolute;left:0;top:18%;height:64%;width:3px;border-radius:3px;background:var(--gold-bright)}
+.side-foot{margin-top:14px;padding:14px;border-radius:14px;background:linear-gradient(140deg,rgba(201,166,104,.10),rgba(201,166,104,.02));
+  border:1px solid rgba(201,166,104,.2);text-align:center}
+.side-foot p{font-size:12px;color:var(--muted);line-height:1.5}.side-foot b{color:var(--gold-bright)}
+
+/* Main */
+.main{flex:1;min-width:0;display:flex;flex-direction:column}
+.topbar{display:flex;align-items:center;justify-content:space-between;padding:20px 34px;border-bottom:1px solid var(--line);
+  position:sticky;top:0;z-index:40;background:linear-gradient(180deg,rgba(10,11,16,.85),rgba(10,11,16,.55));backdrop-filter:blur(14px)}
+.page-title h2{font-family:'Cormorant Garamond',serif;font-size:28px;font-weight:700;
+  background:linear-gradient(100deg,var(--ink) 30%,var(--gold-bright));-webkit-background-clip:text;background-clip:text;color:transparent}
+.page-title p{color:var(--muted);font-size:13.5px;margin-top:2px}
+.top-actions{display:flex;align-items:center;gap:14px}
+.prop-select{background:linear-gradient(160deg,rgba(26,30,42,.85),rgba(18,20,28,.65));border:1px solid var(--line);color:var(--ink);padding:9px 14px;border-radius:11px;font-family:'Manrope';font-size:13.5px;cursor:pointer}
+.prop-select option{background:var(--bg-700)}
+.welcome{display:flex;align-items:center;gap:11px}
+.avatar{width:42px;height:42px;border-radius:50%;background:linear-gradient(140deg,var(--gold-bright),var(--gold) 55%,var(--gold-deep));display:grid;place-items:center;font-weight:700;color:var(--bg-900);box-shadow:0 4px 14px var(--gold-glow)}
+.welcome b{font-size:14px;display:block}.welcome small{color:var(--muted-2);font-size:11.5px}
+
+.content{padding:30px 34px 60px;animation:fade .4s ease}
+@keyframes fade{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+.view{display:none}.view.active{display:block}
+
+/* Cards */
+.card{background:linear-gradient(155deg,var(--panel),rgba(18,20,28,.6));border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow);position:relative;overflow:hidden}
+.card::after{content:"";position:absolute;inset:0;border-radius:var(--radius);padding:1px;background:linear-gradient(140deg,rgba(201,166,104,.22),transparent 42%);
+  -webkit-mask:linear-gradient(#fff 0 0) content-box,linear-gradient(#fff 0 0);-webkit-mask-composite:xor;mask-composite:exclude;pointer-events:none}
+.card-h{display:flex;align-items:center;justify-content:space-between;padding:18px 22px;border-bottom:1px solid var(--line);
+  background:linear-gradient(90deg,rgba(201,166,104,.06),transparent 65%)}
+.card-h h3{font-size:13px;font-weight:700;letter-spacing:.6px;text-transform:uppercase;
+  background:linear-gradient(90deg,var(--gold-bright),var(--gold-deep));-webkit-background-clip:text;background-clip:text;color:transparent}
+.card-b{padding:22px}
+
+.grid{display:grid;gap:20px}
+.g-4{grid-template-columns:repeat(4,1fr)}.g-3{grid-template-columns:repeat(3,1fr)}.g-2{grid-template-columns:repeat(2,1fr)}
+
+/* KPI tiles (premium jewel-tone gradients with glossy sheen) */
+.kpi{border-radius:16px;padding:20px;position:relative;overflow:hidden;color:#fff;transition:.25s;box-shadow:0 12px 30px rgba(0,0,0,.35)}
+.kpi::before{content:"";position:absolute;inset:0;background:radial-gradient(130% 100% at 12% -20%,rgba(255,255,255,.30),transparent 55%);pointer-events:none}
+.kpi:hover{transform:translateY(-4px)}
+.kpi .ico{position:absolute;right:16px;top:16px;width:42px;height:42px;border-radius:12px;background:rgba(255,255,255,.18);display:grid;place-items:center}
+.kpi .ico svg{width:22px;height:22px;stroke:#fff}
+.kpi .lab{font-size:12px;opacity:.85;letter-spacing:.5px;text-transform:uppercase;font-weight:600}
+.kpi .val{font-family:'Cormorant Garamond',serif;font-size:30px;font-weight:700;margin-top:8px;line-height:1}
+.kpi.k1{background:linear-gradient(135deg,#e8d9b8 0%,#c9a668 45%,#8f7038 100%)}
+.kpi.k2{background:linear-gradient(135deg,#a9505f 0%,#8c3a4a 45%,#4a1c26 100%)}
+.kpi.k3{background:linear-gradient(135deg,#4a72a8 0%,#3a5a8c 45%,#1c2c48 100%)}
+.kpi.k4{background:linear-gradient(135deg,#8a68ab 0%,#6b4f8c 45%,#362448 100%)}
+
+.stat{background:linear-gradient(150deg,var(--panel),rgba(18,20,28,.5));border:1px solid var(--line);border-radius:16px;padding:20px;transition:.25s}
+.stat:hover{transform:translateY(-3px);border-color:rgba(201,166,104,.4)}
+.stat-label{font-size:12px;color:var(--muted);letter-spacing:.4px;text-transform:uppercase}
+.stat-val{font-family:'Cormorant Garamond',serif;font-size:30px;font-weight:700;margin-top:5px;line-height:1}
+
+/* Buttons */
+.btn{display:inline-flex;align-items:center;gap:8px;cursor:pointer;border:none;font-family:'Manrope';font-weight:600;font-size:13.5px;padding:11px 18px;border-radius:11px;transition:.22s;white-space:nowrap}
+.btn svg{width:17px;height:17px;stroke:currentColor}
+.btn-gold{background:linear-gradient(135deg,var(--gold-bright),var(--gold) 55%,var(--gold-deep));color:var(--bg-900);box-shadow:0 6px 18px var(--gold-glow)}
+.btn-gold:hover{transform:translateY(-2px);box-shadow:0 10px 26px var(--gold-glow)}
+.btn-ghost{background:linear-gradient(135deg,rgba(201,166,104,.14),rgba(201,166,104,.04));color:var(--gold);border:1px solid rgba(201,166,104,.28)}
+.btn-ghost:hover{background:linear-gradient(135deg,rgba(201,166,104,.22),rgba(201,166,104,.08))}
+.btn-sm{padding:7px 12px;font-size:12.5px;border-radius:9px}
+.btn-danger{background:linear-gradient(135deg,rgba(240,104,111,.22),rgba(240,104,111,.08));color:var(--red);border:1px solid rgba(240,104,111,.3)}
+.btn-danger:hover{background:linear-gradient(135deg,rgba(240,104,111,.34),rgba(240,104,111,.14))}
+
+/* Pills */
+.pill{display:inline-flex;align-items:center;gap:6px;padding:5px 11px;border-radius:30px;font-size:12px;font-weight:600}
+.pill::before{content:"";width:7px;height:7px;border-radius:50%;background:currentColor}
+.pill-green{background:linear-gradient(135deg,rgba(63,201,138,.24),rgba(63,201,138,.08));color:var(--green)}
+.pill-amber{background:linear-gradient(135deg,rgba(240,168,74,.24),rgba(240,168,74,.08));color:var(--amber)}
+.pill-red{background:linear-gradient(135deg,rgba(240,104,111,.24),rgba(240,104,111,.08));color:var(--red)}
+.pill-blue{background:linear-gradient(135deg,rgba(90,169,230,.24),rgba(90,169,230,.08));color:var(--blue)}
+
+/* Table */
+.tbl{width:100%;border-collapse:collapse}
+.tbl th{text-align:left;font-size:11px;letter-spacing:1px;text-transform:uppercase;color:var(--muted-2);padding:12px 14px;border-bottom:1px solid var(--line);
+  background:linear-gradient(180deg,rgba(201,166,104,.05),transparent)}
+.tbl td{padding:13px 14px;border-bottom:1px solid var(--line-soft);font-size:13.5px;color:var(--ink)}
+.tbl tr:hover td{background:rgba(201,166,104,.04)}
+.tbl tr:last-child td{border-bottom:none}
+.cell-name{display:flex;align-items:center;gap:11px}
+.cell-av{width:34px;height:34px;border-radius:9px;display:grid;place-items:center;font-size:13px;font-weight:700;background:linear-gradient(140deg,rgba(201,166,104,.34),rgba(201,166,104,.06));color:var(--gold-bright)}
+
+/* Donut */
+.donut-wrap{display:flex;align-items:center;gap:22px}
+.donut{position:relative;width:124px;height:124px;flex-shrink:0}
+.donut-center{position:absolute;inset:0;display:grid;place-items:center;text-align:center}
+.donut-center b{font-family:'Cormorant Garamond',serif;font-size:24px;display:block;line-height:1}
+.donut-center small{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:1px}
+.legend{display:flex;flex-direction:column;gap:12px;font-size:13.5px;flex:1}
+.legend-row{display:flex;align-items:center;justify-content:space-between}
+.legend-dot{display:flex;align-items:center;gap:8px;color:var(--muted)}
+.legend-dot i{width:11px;height:11px;border-radius:4px}
+.legend-row b{color:var(--ink)}
+
+/* Bar chart */
+.bars{display:flex;align-items:flex-end;gap:14px;height:180px;padding-top:10px}
+.bar-col{flex:1;display:flex;flex-direction:column;align-items:center;gap:7px;height:100%;justify-content:flex-end}
+.bar-stack{width:100%;max-width:42px;display:flex;flex-direction:column-reverse;gap:3px;height:100%;justify-content:flex-end}
+.bar{width:100%;border-radius:5px 5px 0 0;transition:height .6s ease}
+.bar-rec{background:linear-gradient(180deg,#6fe6ab,#189962)}
+.bar-pen{background:linear-gradient(180deg,#ffcf8a,#d98a2c)}
+.bar-lab{font-size:11px;color:var(--muted-2)}
+.chart-legend{display:flex;gap:18px;margin-bottom:8px;font-size:12.5px;color:var(--muted)}
+.chart-legend span{display:flex;align-items:center;gap:7px}.chart-legend i{width:11px;height:11px;border-radius:3px}
+
+/* Progress */
+.prog{height:9px;border-radius:9px;background:rgba(43,47,61,.7);overflow:hidden}
+.prog>i{display:block;height:100%;border-radius:9px;background:linear-gradient(90deg,var(--gold-bright),var(--gold) 55%,var(--gold-deep));transition:width .6s ease}
+
+/* Modal */
+.modal-bg{position:fixed;inset:0;background:rgba(5,6,9,.72);backdrop-filter:blur(6px);z-index:200;display:none;align-items:center;justify-content:center;padding:20px}
+.modal-bg.show{display:flex;animation:fade .25s}
+.modal{width:100%;max-width:540px;max-height:90vh;overflow-y:auto;animation:pop .3s ease}
+@keyframes pop{from{transform:scale(.94);opacity:0}to{transform:scale(1);opacity:1}}
+.field{margin-bottom:16px}
+.field label{display:block;font-size:12.5px;color:var(--muted);margin-bottom:7px;font-weight:500}
+.field input,.field select,.field textarea{width:100%;padding:12px 14px;border-radius:11px;font-family:'Manrope';font-size:14px;background:linear-gradient(160deg,rgba(20,23,32,.85),rgba(10,11,16,.65));border:1px solid var(--line);color:var(--ink);transition:.2s}
+.field input:focus,.field select:focus,.field textarea:focus{outline:none;border-color:var(--gold);box-shadow:0 0 0 3px var(--gold-glow)}
+.field select option{background:var(--bg-700)}
+.row-2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.row-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px}
+.modal-foot{display:flex;gap:12px;justify-content:flex-end;margin-top:8px}
+
+/* Search / toolbar */
+.search{display:flex;align-items:center;gap:10px;background:linear-gradient(160deg,rgba(20,23,32,.75),rgba(10,11,16,.55));border:1px solid var(--line);border-radius:11px;padding:10px 14px;flex:1;max-width:340px}
+.search svg{width:17px;height:17px;stroke:var(--muted-2)}
+.search input{background:none;border:none;color:var(--ink);font-family:'Manrope';font-size:14px;width:100%;outline:none}
+.toolbar{display:flex;align-items:center;gap:14px;margin-bottom:20px;flex-wrap:wrap}
+.filters{display:flex;gap:8px}
+.filt{padding:8px 14px;border-radius:9px;font-size:12.5px;cursor:pointer;background:linear-gradient(160deg,rgba(20,23,32,.65),rgba(10,11,16,.45));border:1px solid var(--line);color:var(--muted);transition:.2s;font-weight:600}
+.filt.active{background:linear-gradient(135deg,rgba(201,166,104,.22),rgba(201,166,104,.08));color:var(--gold-bright);border-color:rgba(201,166,104,.4)}
+
+/* Receipts */
+.rcpt{display:flex;align-items:center;gap:14px;padding:15px 18px;border-radius:13px;background:rgba(10,11,16,.45);border:1px solid var(--line);margin-bottom:11px;transition:.2s}
+.rcpt:hover{border-color:rgba(201,166,104,.35)}
+.rcpt-ico{width:42px;height:42px;border-radius:11px;background:linear-gradient(140deg,var(--emerald-soft),rgba(79,111,148,.04));display:grid;place-items:center;flex-shrink:0}
+.rcpt-ico svg{width:21px;height:21px;stroke:var(--emerald)}
+.rcpt-info{flex:1}.rcpt-info b{font-size:14.5px}.rcpt-info small{display:block;color:var(--muted-2);font-size:12px;margin-top:2px}
+.rcpt-amt{font-family:'Cormorant Garamond',serif;font-size:21px;font-weight:700;color:var(--gold-bright)}
+
+/* Empty */
+.empty{text-align:center;padding:44px 20px;color:var(--muted)}
+.empty svg{width:48px;height:48px;stroke:var(--muted-2);margin-bottom:12px}.empty p{font-size:14px}
+
+/* Toast */
+.toast{position:fixed;bottom:26px;right:26px;background:linear-gradient(140deg,var(--panel-2),var(--bg-700));border:1px solid var(--gold);color:var(--ink);padding:14px 20px;border-radius:13px;box-shadow:var(--shadow);z-index:300;display:flex;align-items:center;gap:10px;font-size:14px;font-weight:500;transform:translateX(140%);transition:.4s cubic-bezier(.2,.9,.3,1.3)}
+.toast.show{transform:none}.toast svg{width:19px;height:19px;stroke:var(--gold-bright)}
+
+/* Save status */
+.save-status{display:flex;align-items:center;gap:6px;padding:8px 13px;border-radius:30px;font-weight:600;font-size:12.5px;
+  background:linear-gradient(135deg,rgba(63,201,138,.18),rgba(63,201,138,.06));color:var(--green);border:1px solid rgba(63,201,138,.3);white-space:nowrap;transition:.2s}
+.save-status svg{width:14px;height:14px;stroke:var(--green);flex-shrink:0}
+.save-status.pending{background:linear-gradient(135deg,rgba(240,168,74,.2),rgba(240,168,74,.06));color:var(--amber);border-color:rgba(240,168,74,.35)}
+.save-status.pending svg{stroke:var(--amber)}
+
+/* Mobile */
+.menu-btn{display:none;background:linear-gradient(135deg,rgba(201,166,104,.16),rgba(201,166,104,.05));border:1px solid var(--line);color:var(--gold);width:40px;height:40px;border-radius:10px;cursor:pointer;font-size:20px}
+.overlay-bg{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:45}
+@media(max-width:1100px){.g-4{grid-template-columns:repeat(2,1fr)}.g-3{grid-template-columns:1fr}.g-2{grid-template-columns:1fr}}
+@media(max-width:860px){
+  .sidebar{position:fixed;left:0;transform:translateX(-100%);transition:.3s;box-shadow:var(--shadow)}
+  .sidebar.open{transform:none}.overlay-bg.show{display:block}.menu-btn{display:grid;place-items:center}
+  .content{padding:22px 16px 50px}.topbar{padding:16px 16px}
+  .g-4{grid-template-columns:1fr 1fr}.welcome small{display:none}.prop-select{display:none}
+  .save-status span{display:none}.save-status{padding:8px}
+  .page-title h2{font-size:22px}.row-2,.row-3{grid-template-columns:1fr}
+  .tbl-wrap{overflow-x:auto}.tbl{min-width:680px}
+}
+</style>
+</head>
+<body>
+<div class="app">
+  <!-- SIDEBAR -->
+  <aside class="sidebar" id="sidebar">
+    <div class="brand">
+      <div class="brand-logo" style="font-family:'Cormorant Garamond',serif;color:var(--bg-900);font-weight:700">P</div>
+      <div class="brand-text"><h1>Hotel Perla</h1><span>San Franz</span></div>
+    </div>
+    <nav class="nav">
+      <div class="nav-label">Main</div>
+      <div class="nav-item active" data-view="dashboard"><svg fill="none" viewBox="0 0 24 24" stroke-width="1.8"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>Dashboard</div>
+      <div class="nav-item" data-view="bookings"><svg fill="none" viewBox="0 0 24 24" stroke-width="1.8"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>Bookings</div>
+      <div class="nav-item" data-view="payments"><svg fill="none" viewBox="0 0 24 24" stroke-width="1.8"><rect x="2" y="5" width="20" height="14" rx="2"/><path d="M2 10h20"/></svg>Payments</div>
+      <div class="nav-item" data-view="guests"><svg fill="none" viewBox="0 0 24 24" stroke-width="1.8"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/></svg>Guests</div>
+      <div class="nav-item" data-view="receipts"><svg fill="none" viewBox="0 0 24 24" stroke-width="1.8"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6M16 13H8M16 17H8"/></svg>Receipts</div>
+      <div class="nav-label">Insights</div>
+      <div class="nav-item" data-view="reports"><svg fill="none" viewBox="0 0 24 24" stroke-width="1.8"><path d="M3 3v18h18"/><path d="M18 17V9M13 17V5M8 17v-3"/></svg>Reports</div>
+      <div class="nav-item" data-view="settings"><svg fill="none" viewBox="0 0 24 24" stroke-width="1.8"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>Settings</div>
+    </nav>
+    <div class="side-foot"><p>💾 Data auto-saved on this device.<br><b>Hotel Perla - San Franz</b></p></div>
+  </aside>
+  <div class="overlay-bg" id="overlay"></div>
+
+  <!-- MAIN -->
+  <div class="main">
+    <header class="topbar">
+      <div style="display:flex;align-items:center;gap:14px">
+        <button class="menu-btn" id="menuBtn">☰</button>
+        <div class="page-title"><h2 id="pageTitle">Dashboard</h2><p id="pageSub">Track payments. Monitor balances. Manage bookings.</p></div>
+      </div>
+      <div class="top-actions">
+        <div class="save-status" id="saveStatus" title="All changes are saved automatically to this device">
+          <svg fill="none" viewBox="0 0 24 24" stroke-width="2"><path d="M20 6 9 17l-5-5"/></svg>
+          <span id="saveStatusText">Saved</span>
+        </div>
+        <select class="prop-select" id="propSelect" onchange="setProp(this.value)"></select>
+        <button class="btn btn-ghost btn-sm" onclick="exportData()"><svg fill="none" viewBox="0 0 24 24" stroke-width="1.8"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg>Export</button>
+        <div class="welcome"><div class="avatar" id="avatar">H</div><div><b id="userName">Manager</b><small id="userBiz">Hotel Perla - San Franz</small></div></div>
+      </div>
+    </header>
+
+    <div class="content">
+      <!-- DASHBOARD -->
+      <section class="view active" id="view-dashboard">
+        <div class="grid g-4" style="margin-bottom:22px">
+          <div class="kpi k1"><div class="ico"><svg fill="none" viewBox="0 0 24 24" stroke-width="1.8"><path d="M3 3v18h18"/><path d="M18 17V9M13 17V5M8 17v-3"/></svg></div><div class="lab">Total Payments Received</div><div class="val" id="kReceived">₱0</div></div>
+          <div class="kpi k2"><div class="ico"><svg fill="none" viewBox="0 0 24 24" stroke-width="1.8"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg></div><div class="lab">Pending Balances</div><div class="val" id="kPending">₱0</div></div>
+          <div class="kpi k3"><div class="ico"><svg fill="none" viewBox="0 0 24 24" stroke-width="1.8"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/></svg></div><div class="lab">Total Bookings</div><div class="val" id="kBookings">0</div></div>
+          <div class="kpi k4"><div class="ico"><svg fill="none" viewBox="0 0 24 24" stroke-width="1.8"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg></div><div class="lab">Today's Check-ins</div><div class="val" id="kCheckins">0</div></div>
+        </div>
+
+        <div class="card" style="margin-bottom:22px">
+          <div class="card-h"><h3>Recent Bookings & Payments</h3><button class="btn btn-ghost btn-sm" data-jump="bookings">View All</button></div>
+          <div class="card-b tbl-wrap" style="padding:0"><table class="tbl"><thead><tr><th>Guest Name</th><th>Room</th><th>Check-in</th><th>Check-out</th><th>Total</th><th>Paid</th><th>Balance</th><th>Status</th></tr></thead><tbody id="dashBookings"></tbody></table></div>
+        </div>
+
+        <div class="grid g-2">
+          <div class="card">
+            <div class="card-h"><h3>Payment Overview</h3></div>
+            <div class="card-b">
+              <div class="chart-legend"><span><i style="background:linear-gradient(135deg,#6fe6ab,#189962)"></i>Payments Received</span><span><i style="background:linear-gradient(135deg,#ffcf8a,#d98a2c)"></i>Pending Balances</span></div>
+              <div class="bars" id="overviewBars"></div>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-h"><h3>Payment Status</h3></div>
+            <div class="card-b"><div class="donut-wrap"><div class="donut" id="statusDonut"></div><div class="legend" id="statusLegend"></div></div></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- BOOKINGS -->
+      <section class="view" id="view-bookings">
+        <div class="toolbar">
+          <div class="search"><svg fill="none" viewBox="0 0 24 24" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg><input id="searchBookings" placeholder="Search guest or room..."></div>
+          <div class="filters" id="bookFilters">
+            <div class="filt active" data-f="all">All</div><div class="filt" data-f="paid">Paid</div><div class="filt" data-f="partial">Partial</div><div class="filt" data-f="pending">Pending</div>
+          </div>
+          <button class="btn btn-gold" onclick="openBookingModal()"><svg fill="none" viewBox="0 0 24 24" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>New Booking</button>
+        </div>
+        <div class="card"><div class="card-b tbl-wrap" style="padding:0"><table class="tbl"><thead><tr><th>Guest</th><th>Room</th><th>Check-in</th><th>Check-out</th><th>Due Date</th><th>Total</th><th>Paid</th><th>Balance</th><th>Status</th><th></th></tr></thead><tbody id="bookBody"></tbody></table></div></div>
+      </section>
+
+      <!-- PAYMENTS -->
+      <section class="view" id="view-payments">
+        <div class="grid g-4" style="margin-bottom:22px">
+          <div class="stat"><div class="stat-label">Total Amount</div><div class="stat-val" id="pTotalAmt">₱0</div></div>
+          <div class="stat"><div class="stat-label" style="color:var(--green)">Total Paid</div><div class="stat-val" id="pPaid" style="color:var(--green)">₱0</div></div>
+          <div class="stat"><div class="stat-label" style="color:var(--amber)">Outstanding</div><div class="stat-val" id="pOut" style="color:var(--amber)">₱0</div></div>
+          <div class="stat"><div class="stat-label">Collection Rate</div><div class="stat-val" id="pRate">0%</div><div class="prog" style="margin-top:10px"><i id="pBar"></i></div></div>
+        </div>
+        <div class="card"><div class="card-h"><h3>Payment Records</h3><button class="btn btn-gold btn-sm" onclick="openBookingModal()"><svg fill="none" viewBox="0 0 24 24" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>Add Payment</button></div>
+          <div class="card-b tbl-wrap" style="padding:0"><table class="tbl"><thead><tr><th>Guest</th><th>Room</th><th>Total</th><th>Paid</th><th>Balance</th><th>Status</th><th>Record Payment</th></tr></thead><tbody id="payBody"></tbody></table></div></div>
+      </section>
+
+      <!-- GUESTS -->
+      <section class="view" id="view-guests">
+        <div class="toolbar">
+          <div class="search"><svg fill="none" viewBox="0 0 24 24" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg><input id="searchGuests" placeholder="Search guests..."></div>
+          <button class="btn btn-gold" onclick="openGuestModal()"><svg fill="none" viewBox="0 0 24 24" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>Add Guest</button>
+        </div>
+        <div class="grid g-3" id="guestsGrid"></div>
+      </section>
+
+      <!-- RECEIPTS -->
+      <section class="view" id="view-receipts">
+        <div class="toolbar">
+          <div class="search"><svg fill="none" viewBox="0 0 24 24" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg><input id="searchReceipts" placeholder="Search receipts..."></div>
+        </div>
+        <div class="card"><div class="card-h"><h3>Payment Receipts</h3></div><div class="card-b" id="receiptsList"></div></div>
+      </section>
+
+      <!-- REPORTS -->
+      <section class="view" id="view-reports">
+        <div class="grid g-2" style="margin-bottom:22px">
+          <div class="card"><div class="card-h"><h3>Revenue by Status</h3></div><div class="card-b" id="repStatus"></div></div>
+          <div class="card"><div class="card-h"><h3>Top Guests by Spend</h3></div><div class="card-b" id="repGuests"></div></div>
+        </div>
+        <div class="card"><div class="card-h"><h3>Business Summary</h3><button class="btn btn-ghost btn-sm" onclick="window.print()"><svg fill="none" viewBox="0 0 24 24" stroke-width="1.8"><path d="M6 9V2h12v7M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2M6 14h12v8H6z"/></svg>Print</button></div><div class="card-b grid g-4" id="repSummary"></div></div>
+      </section>
+
+      <!-- SETTINGS -->
+      <section class="view" id="view-settings">
+        <div class="card" style="max-width:640px">
+          <div class="card-h"><h3>Property & Owner Profile</h3></div>
+          <div class="card-b">
+            <div class="field"><label>Owner / Manager Name</label><input id="setName" placeholder="Owner"></div>
+            <div class="field"><label>Property Name</label><input id="setBiz" placeholder="e.g. Hotel Perla - San Franz"></div>
+            <div class="row-2"><div class="field"><label>Currency Symbol</label><input id="setCurrency" placeholder="₱"></div><div class="field"><label>Contact / Messenger Link</label><input id="setContact" placeholder="https://m.me/yourpage"></div></div>
+            <button class="btn btn-gold" onclick="saveSettings()"><svg fill="none" viewBox="0 0 24 24" stroke-width="2"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><path d="M17 21v-8H7v8M7 3v5h8"/></svg>Save Profile</button>
+          </div>
+        </div>
+        <div class="card" style="max-width:640px;margin-top:22px">
+          <div class="card-h"><h3>Manage Properties</h3></div>
+          <div class="card-b">
+            <div id="propList" style="margin-bottom:16px"></div>
+            <div style="display:flex;gap:10px"><input id="newProp" placeholder="New property name" style="flex:1;padding:11px 14px;border-radius:11px;background:rgba(10,11,16,.7);border:1px solid var(--line);color:var(--ink);font-family:Manrope"><button class="btn btn-ghost" onclick="addProp()">Add</button></div>
+          </div>
+        </div>
+        <div class="card" style="max-width:640px;margin-top:22px">
+          <div class="card-h"><h3 style="color:var(--red)">Data Management</h3></div>
+          <div class="card-b"><p style="color:var(--muted);font-size:13.5px;margin-bottom:16px">Export backup or reset to start fresh.</p>
+            <div style="display:flex;gap:12px;flex-wrap:wrap">
+              <button class="btn btn-ghost" onclick="exportData()"><svg fill="none" viewBox="0 0 24 24" stroke-width="1.8"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg>Export Backup</button>
+              <button class="btn btn-danger" onclick="resetAll()"><svg fill="none" viewBox="0 0 24 24" stroke-width="1.8"><path d="M3 6h18M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"/></svg>Reset All Data</button>
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL -->
+<div class="modal-bg" id="modalBg"><div class="card modal" id="modalCard">
+  <div class="card-h"><h3 id="modalTitle">Add</h3><button class="btn btn-sm" style="background:none;color:var(--muted)" onclick="closeModal()">✕</button></div>
+  <div class="card-b" id="modalBody"></div>
+</div></div>
+
+<div class="toast" id="toast"><svg fill="none" viewBox="0 0 24 24" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><path d="M22 4 12 14.01l-3-3"/></svg><span id="toastMsg">Saved!</span></div>
+
+<script>
+/* ============ STATE ============ */
+const KEY='hotelPerlaSanFranz_v1';
+let DB={
+  properties:['Hotel Perla - San Franz'],
+  activeProp:'Hotel Perla - San Franz',
+  bookings:[], guests:[],
+  settings:{name:'Manager',biz:'Hotel Perla - San Franz',currency:'₱',contact:''}
+};
+let editId=null, bookFilter='all';
+
+function load(){const s=localStorage.getItem(KEY);if(s){try{DB=Object.assign(DB,JSON.parse(s))}catch(e){}}}
+function save(){localStorage.setItem(KEY,JSON.stringify(DB));markSaved()}
+function markSaved(){
+  const el=document.getElementById('saveStatus'),t=document.getElementById('saveStatusText');
+  if(!el||!t)return;
+  el.classList.remove('pending');
+  t.textContent='Saved · '+new Date().toLocaleTimeString('en',{hour:'2-digit',minute:'2-digit'});
+}
+function uid(){return Date.now().toString(36)+Math.random().toString(36).slice(2,6)}
+function cur(){return DB.settings.currency||'₱'}
+function money(n){return cur()+Number(n||0).toLocaleString('en-US',{maximumFractionDigits:0})}
+function esc(s){return String(s||'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]))}
+function propBookings(){return DB.bookings.filter(b=>b.prop===DB.activeProp)}
+
+/* status from numbers */
+function statusOf(b){const paid=Number(b.paid||0),tot=Number(b.total||0);if(paid<=0)return 'pending';if(paid>=tot)return 'paid';return 'partial'}
+
+/* ============ NAV ============ */
+const titles={dashboard:["Dashboard","Track payments. Monitor balances. Manage bookings."],bookings:["Bookings","All guest bookings & balances."],payments:["Payments","Record & monitor every payment."],guests:["Guests","Guest directory & history."],receipts:["Receipts","Payment receipts & history."],reports:["Reports","Insights across your property."],settings:["Settings","Property profile & data."]};
+function go(view){
+  document.querySelectorAll('.nav-item').forEach(n=>n.classList.toggle('active',n.dataset.view===view));
+  document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));
+  document.getElementById('view-'+view).classList.add('active');
+  document.getElementById('pageTitle').textContent=titles[view][0];
+  document.getElementById('pageSub').textContent=titles[view][1];
+  closeSidebar();render();
+}
+document.querySelectorAll('.nav-item').forEach(n=>n.onclick=()=>go(n.dataset.view));
+document.querySelectorAll('[data-jump]').forEach(b=>b.onclick=()=>go(b.dataset.jump));
+document.querySelectorAll('#bookFilters .filt').forEach(f=>f.onclick=()=>{bookFilter=f.dataset.f;document.querySelectorAll('#bookFilters .filt').forEach(x=>x.classList.toggle('active',x===f));renderBookings()});
+
+const sb=document.getElementById('sidebar'),ov=document.getElementById('overlay');
+document.getElementById('menuBtn').onclick=()=>{sb.classList.add('open');ov.classList.add('show')};
+function closeSidebar(){sb.classList.remove('open');ov.classList.remove('show')}
+ov.onclick=closeSidebar;
+
+/* ============ TOAST/MODAL ============ */
+let toastT;
+function toast(m){const t=document.getElementById('toast');document.getElementById('toastMsg').textContent=m;t.classList.add('show');clearTimeout(toastT);toastT=setTimeout(()=>t.classList.remove('show'),2600)}
+function openModal(t,h){document.getElementById('modalTitle').textContent=t;document.getElementById('modalBody').innerHTML=h;document.getElementById('modalBg').classList.add('show')}
+function closeModal(){document.getElementById('modalBg').classList.remove('show');editId=null}
+document.getElementById('modalBg').onclick=e=>{if(e.target.id==='modalBg')closeModal()};
+
+/* ============ DONUT ============ */
+function donut(segs){const total=segs.reduce((a,s)=>a+s.val,0)||1;const r=52,c=2*Math.PI*r;let off=0;
+  const defs=segs.map((s,i)=>`<linearGradient id="dg${i}" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="${s.c1}"/><stop offset="100%" stop-color="${s.c2}"/></linearGradient>`).join('');
+  let circles=segs.map((s,i)=>{const len=(s.val/total)*c;const ci=`<circle cx="62" cy="62" r="${r}" fill="none" stroke="url(#dg${i})" stroke-width="15" stroke-dasharray="${len} ${c-len}" stroke-dashoffset="${-off}"/>`;off+=len;return ci}).join('');
+  return `<svg width="124" height="124" viewBox="0 0 124 124" style="transform:rotate(-90deg)"><defs>${defs}</defs><circle cx="62" cy="62" r="${r}" fill="none" stroke="rgba(43,47,61,.7)" stroke-width="15"/>${circles}</svg>`}
+
+/* ============ RENDER ============ */
+function render(){
+  document.getElementById('userName').textContent=DB.settings.name||'Owner';
+  document.getElementById('userBiz').textContent=DB.activeProp||DB.settings.biz;
+  document.getElementById('avatar').textContent=(DB.settings.name||'H')[0].toUpperCase();
+  renderPropSelect();renderDashboard();renderBookings();renderPayments();renderGuests();renderReceipts();renderReports();renderSettings();
+}
+
+function renderPropSelect(){
+  const s=document.getElementById('propSelect');
+  s.innerHTML=DB.properties.map(p=>`<option ${p===DB.activeProp?'selected':''}>${esc(p)}</option>`).join('');
+}
+function setProp(p){DB.activeProp=p;save();render()}
+
+/* sums for active prop */
+function sums(){const bs=propBookings();let tot=0,paid=0;bs.forEach(b=>{tot+=Number(b.total||0);paid+=Number(b.paid||0)});return{tot,paid,bal:tot-paid,count:bs.length}}
+function statusCounts(){const o={paid:0,partial:0,pending:0};propBookings().forEach(b=>o[statusOf(b)]++);return o}
+function statusAmounts(){const o={paid:0,partial:0,pending:0};propBookings().forEach(b=>{o[statusOf(b)]+=Number(b.total||0)});return o}
+
+/* ---- DASHBOARD ---- */
+function renderDashboard(){
+  const s=sums();
+  document.getElementById('kReceived').textContent=money(s.paid);
+  document.getElementById('kPending').textContent=money(s.bal);
+  document.getElementById('kBookings').textContent=s.count;
+  const today=new Date().toISOString().slice(0,10);
+  document.getElementById('kCheckins').textContent=propBookings().filter(b=>b.checkin===today).length;
+
+  // recent table
+  const recent=[...propBookings()].sort((a,b)=>(b.checkin||'').localeCompare(a.checkin||'')).slice(0,6);
+  document.getElementById('dashBookings').innerHTML=recent.length?recent.map(b=>rowMini(b)).join(''):`<tr><td colspan="8">${emptyHTML('No bookings yet')}</td></tr>`;
+
+  // bars (last 7 grouped by checkin day)
+  renderOverviewBars();
+
+  // donut
+  const sc=statusCounts(),total=s.count||1;
+  const pct=k=>Math.round(sc[k]/total*100);
+  document.getElementById('statusDonut').innerHTML=donut([{val:sc.paid,c1:'#6fe6ab',c2:'#189962'},{val:sc.partial,c1:'#ffcf8a',c2:'#d98a2c'},{val:sc.pending,c1:'#ff8f96',c2:'#d33d47'}])
+    +`<div class="donut-center"><b>${s.count}</b><small>Bookings</small></div>`;
+  document.getElementById('statusLegend').innerHTML=[['Paid','paid','linear-gradient(135deg,#6fe6ab,#189962)'],['Partial','partial','linear-gradient(135deg,#ffcf8a,#d98a2c)'],['Pending','pending','linear-gradient(135deg,#ff8f96,#d33d47)']]
+    .map(r=>`<div class="legend-row"><span class="legend-dot"><i style="background:${r[2]}"></i>${r[0]}</span><b>${pct(r[1])}%</b></div>`).join('');
+}
+function rowMini(b){const st=statusOf(b);return `<tr>
+  <td><b>${esc(b.guest)}</b></td><td>${esc(b.room||'-')}</td><td>${fmtDate(b.checkin)}</td><td>${fmtDate(b.checkout)}</td>
+  <td>${money(b.total)}</td><td style="color:var(--green)">${money(b.paid)}</td><td style="color:${(b.total-b.paid)>0?'var(--amber)':'var(--muted)'}">${money(b.total-b.paid)}</td>
+  <td>${stPill(st)}</td></tr>`}
+function renderOverviewBars(){
+  const bs=propBookings();const map={};
+  bs.forEach(b=>{const d=b.checkin||'—';if(!map[d])map[d]={rec:0,pen:0};map[d].rec+=Number(b.paid||0);map[d].pen+=Number(b.total-b.paid||0)});
+  let days=Object.keys(map).filter(d=>d!=='—').sort().slice(-7);
+  if(!days.length){document.getElementById('overviewBars').innerHTML=`<div class="empty" style="width:100%">${''}<p>No payment data yet</p></div>`;return}
+  const max=Math.max(...days.map(d=>map[d].rec+map[d].pen),1);
+  document.getElementById('overviewBars').innerHTML=days.map(d=>{
+    const rh=map[d].rec/max*100,ph=map[d].pen/max*100;
+    return `<div class="bar-col"><div class="bar-stack"><div class="bar bar-pen" style="height:${ph}%"></div><div class="bar bar-rec" style="height:${rh}%"></div></div><span class="bar-lab">${new Date(d+'T00:00').toLocaleDateString('en',{month:'short',day:'numeric'})}</span></div>`}).join('');
+}
+function emptyHTML(m){return `<div class="empty"><svg fill="none" viewBox="0 0 24 24" stroke-width="1.5"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg><p>${m}</p></div>`}
+function fmtDate(d){if(!d)return '-';return new Date(d+'T00:00').toLocaleDateString('en',{month:'short',day:'numeric',year:'numeric'})}
+function stPill(s){const m={paid:['green','Paid'],partial:['amber','Partial'],pending:['red','Pending']};const x=m[s]||m.pending;return `<span class="pill pill-${x[0]}">${x[1]}</span>`}
+
+/* ---- BOOKINGS ---- */
+function renderBookings(){
+  const q=(document.getElementById('searchBookings').value||'').toLowerCase();
+  let list=propBookings().filter(b=>(b.guest+b.room).toLowerCase().includes(q));
+  if(bookFilter!=='all')list=list.filter(b=>statusOf(b)===bookFilter);
+  const body=document.getElementById('bookBody');
+  if(!list.length){body.innerHTML=`<tr><td colspan="10">${emptyHTML('No bookings found')}</td></tr>`;return}
+  body.innerHTML=list.map(b=>{const st=statusOf(b),bal=b.total-b.paid;return `<tr>
+    <td><div class="cell-name"><div class="cell-av">${(b.guest||'?')[0].toUpperCase()}</div><b>${esc(b.guest)}</b></div></td>
+    <td>${esc(b.room||'-')}</td><td>${fmtDate(b.checkin)}</td><td>${fmtDate(b.checkout)}</td><td>${fmtDate(b.due)}</td>
+    <td><b>${money(b.total)}</b></td><td style="color:var(--green)">${money(b.paid)}</td><td style="color:${bal>0?'var(--amber)':'var(--muted)'}">${money(bal)}</td>
+    <td>${stPill(st)}</td>
+    <td style="text-align:right;white-space:nowrap"><button class="btn btn-sm btn-ghost" onclick="openBookingModal('${b.id}')">Edit</button> <button class="btn btn-sm" style="background:none;color:var(--muted-2)" onclick="delBooking('${b.id}')">✕</button></td>
+  </tr>`}).join('');
+}
+function delBooking(id){if(!confirm('Delete this booking?'))return;DB.bookings=DB.bookings.filter(b=>b.id!==id);save();render();toast('Booking deleted')}
+
+/* ---- PAYMENTS ---- */
+function renderPayments(){
+  const s=sums();
+  document.getElementById('pTotalAmt').textContent=money(s.tot);
+  document.getElementById('pPaid').textContent=money(s.paid);
+  document.getElementById('pOut').textContent=money(s.bal);
+  const rate=s.tot?Math.round(s.paid/s.tot*100):0;
+  document.getElementById('pRate').textContent=rate+'%';
+  document.getElementById('pBar').style.width=rate+'%';
+  const body=document.getElementById('payBody');const list=propBookings();
+  if(!list.length){body.innerHTML=`<tr><td colspan="7">${emptyHTML('No records yet')}</td></tr>`;return}
+  body.innerHTML=list.map(b=>{const st=statusOf(b),bal=b.total-b.paid;return `<tr>
+    <td><div class="cell-name"><div class="cell-av">${(b.guest||'?')[0].toUpperCase()}</div><b>${esc(b.guest)}</b></div></td>
+    <td>${esc(b.room||'-')}</td><td><b>${money(b.total)}</b></td><td style="color:var(--green)">${money(b.paid)}</td>
+    <td style="color:${bal>0?'var(--amber)':'var(--muted)'}">${money(bal)}</td><td>${stPill(st)}</td>
+    <td style="text-align:right">${bal>0?`<button class="btn btn-sm btn-gold" onclick="openPayModal('${b.id}')">+ Record</button>`:'<span class="pill pill-green">Settled</span>'}</td>
+  </tr>`}).join('');
+}
+function openPayModal(id){
+  const b=DB.bookings.find(x=>x.id===id);if(!b)return;const bal=b.total-b.paid;
+  openModal('Record Payment — '+esc(b.guest),`
+    <p style="color:var(--muted);font-size:13.5px;margin-bottom:16px">Outstanding balance: <b style="color:var(--amber)">${money(bal)}</b></p>
+    ${field('Payment Amount','f_payamt',bal,'number','0')}
+    <div class="modal-foot"><button class="btn btn-ghost" onclick="closeModal()">Cancel</button><button class="btn btn-gold" onclick="recordPay('${id}')">Record Payment</button></div>`);
+}
+function recordPay(id){const b=DB.bookings.find(x=>x.id===id);const amt=+val('f_payamt')||0;if(amt<=0){toast('Enter amount');return}
+  b.paid=Math.min(Number(b.paid)+amt,Number(b.total));
+  if(!b.receipts)b.receipts=[];b.receipts.push({n:'R-'+String(1000+(countReceipts()+1)).slice(-4),amt,date:new Date().toISOString().slice(0,10)});
+  save();render();closeModal();toast('Payment recorded! 🎉')}
+function countReceipts(){let c=0;DB.bookings.forEach(b=>{if(b.receipts)c+=b.receipts.length});return c}
+
+/* ---- GUESTS ---- */
+function renderGuests(){
+  const q=(document.getElementById('searchGuests').value||'').toLowerCase();
+  // build guest list = explicit guests + derived from bookings
+  const map={};
+  DB.guests.filter(g=>g.prop===DB.activeProp).forEach(g=>map[g.name]={...g});
+  propBookings().forEach(b=>{if(!map[b.guest])map[b.guest]={name:b.guest,phone:'',email:''};map[b.guest].spent=(map[b.guest].spent||0)+Number(b.paid||0);map[b.guest].bookings=(map[b.guest].bookings||0)+1});
+  let list=Object.values(map).filter(g=>(g.name||'').toLowerCase().includes(q));
+  const grid=document.getElementById('guestsGrid');
+  if(!list.length){grid.innerHTML=emptyHTML('No guests yet');return}
+  grid.innerHTML=list.map(g=>`<div class="card"><div class="card-b">
+    <div style="display:flex;align-items:center;gap:14px;margin-bottom:14px">
+      <div class="avatar" style="width:52px;height:52px;font-size:20px">${(g.name||'?')[0].toUpperCase()}</div>
+      <div style="flex:1"><h3 style="font-family:'Cormorant Garamond';font-size:20px">${esc(g.name)}</h3><span style="color:var(--gold);font-size:12.5px">${g.bookings||0} booking(s)</span></div>
+      ${g.id?`<button class="btn btn-sm" style="background:none;color:var(--muted-2)" onclick="delGuest('${g.id}')">✕</button>`:''}
+    </div>
+    <div style="font-size:13.5px;color:var(--muted);line-height:2">
+      ${g.phone?`<div>📱 ${esc(g.phone)}</div>`:''}${g.email?`<div>✉️ ${esc(g.email)}</div>`:''}
+      <div>💰 Total spent: <b style="color:var(--gold)">${money(g.spent||0)}</b></div>
+      ${g.note?`<div style="margin-top:8px;padding-top:8px;border-top:1px solid var(--line);color:var(--muted-2)">${esc(g.note)}</div>`:''}
+    </div>
+  </div></div>`).join('');
+}
+function delGuest(id){if(!confirm('Delete this guest?'))return;DB.guests=DB.guests.filter(g=>g.id!==id);save();render();toast('Guest deleted')}
+
+/* ---- RECEIPTS ---- */
+function renderReceipts(){
+  const q=(document.getElementById('searchReceipts').value||'').toLowerCase();
+  let rows=[];
+  propBookings().forEach(b=>{(b.receipts||[]).forEach(r=>rows.push({guest:b.guest,...r,status:statusOf(b)}))});
+  rows=rows.filter(r=>(r.guest+r.n).toLowerCase().includes(q)).sort((a,b)=>(b.date||'').localeCompare(a.date||''));
+  const el=document.getElementById('receiptsList');
+  if(!rows.length){el.innerHTML=emptyHTML('No receipts yet. Record a payment to generate one.');return}
+  el.innerHTML=rows.map(r=>`<div class="rcpt">
+    <div class="rcpt-ico"><svg fill="none" viewBox="0 0 24 24" stroke-width="1.7"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6M16 13H8M16 17H8"/></svg></div>
+    <div class="rcpt-info"><b>Receipt #${esc(r.n)}</b><small>${esc(r.guest)} · ${fmtDate(r.date)}</small></div>
+    <div class="rcpt-amt">${money(r.amt)}</div>
+    <span class="pill pill-green" style="margin-left:14px">Paid</span>
+  </div>`).join('');
+}
+
+/* ---- REPORTS ---- */
+function renderReports(){
+  const sa=statusAmounts();const max=Math.max(sa.paid,sa.partial,sa.pending,1);
+  document.getElementById('repStatus').innerHTML=[['Paid (full)',sa.paid,'linear-gradient(90deg,#6fe6ab,#189962)'],['Partial',sa.partial,'linear-gradient(90deg,#ffcf8a,#d98a2c)'],['Pending',sa.pending,'linear-gradient(90deg,#ff8f96,#d33d47)']]
+    .map(r=>`<div style="margin-bottom:16px"><div style="display:flex;justify-content:space-between;font-size:13.5px;margin-bottom:6px"><span>${r[0]}</span><b style="color:var(--gold)">${money(r[1])}</b></div><div class="prog"><i style="width:${r[1]/max*100}%;background:${r[2]}"></i></div></div>`).join('') || emptyHTML('No data');
+  // top guests
+  const map={};propBookings().forEach(b=>{map[b.guest]=(map[b.guest]||0)+Number(b.paid||0)});
+  const top=Object.entries(map).sort((a,b)=>b[1]-a[1]).slice(0,6);
+  document.getElementById('repGuests').innerHTML=top.length?top.map((g,i)=>`<div style="display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid var(--line-soft)"><div class="cell-av">${i+1}</div><b style="flex:1">${esc(g[0])}</b><span style="color:var(--gold)">${money(g[1])}</span></div>`).join(''):emptyHTML('No guests yet');
+  const s=sums();
+  const cards=[['Bookings',s.count],['Total Revenue',money(s.tot)],['Collected',money(s.paid)],['Outstanding',money(s.bal)],['Receipts',countReceipts()],['Properties',DB.properties.length],['Collection %',(s.tot?Math.round(s.paid/s.tot*100):0)+'%'],['Avg / Booking',money(s.count?Math.round(s.tot/s.count):0)]];
+  document.getElementById('repSummary').innerHTML=cards.map(c=>`<div class="stat"><div class="stat-label">${c[0]}</div><div class="stat-val" style="font-size:24px">${c[1]}</div></div>`).join('');
+}
+
+/* ---- SETTINGS ---- */
+function renderSettings(){
+  document.getElementById('setName').value=DB.settings.name||'';
+  document.getElementById('setBiz').value=DB.settings.biz||'';
+  document.getElementById('setCurrency').value=DB.settings.currency||'₱';
+  document.getElementById('setContact').value=DB.settings.contact||'';
+  document.getElementById('propList').innerHTML=DB.properties.map(p=>`<div style="display:flex;align-items:center;justify-content:space-between;padding:10px 14px;background:rgba(10,11,16,.5);border:1px solid var(--line);border-radius:10px;margin-bottom:8px"><span>${esc(p)} ${p===DB.activeProp?'<span class="pill pill-green" style="margin-left:8px">Active</span>':''}</span>${DB.properties.length>1?`<button class="btn btn-sm" style="background:none;color:var(--muted-2)" onclick="delProp('${esc(p)}')">✕</button>`:''}</div>`).join('');
+}
+function saveSettings(){DB.settings.name=document.getElementById('setName').value||'Manager';DB.settings.biz=document.getElementById('setBiz').value||'Hotel Perla - San Franz';DB.settings.currency=document.getElementById('setCurrency').value||'₱';DB.settings.contact=document.getElementById('setContact').value;save();render();toast('Profile saved!')}
+function addProp(){const n=document.getElementById('newProp').value.trim();if(!n)return;if(DB.properties.includes(n)){toast('Already exists');return}DB.properties.push(n);document.getElementById('newProp').value='';save();render();toast('Property added')}
+function delProp(p){if(DB.properties.length<=1){toast('Need at least one property');return}if(!confirm('Delete property "'+p+'" and its bookings?'))return;DB.properties=DB.properties.filter(x=>x!==p);DB.bookings=DB.bookings.filter(b=>b.prop!==p);if(DB.activeProp===p)DB.activeProp=DB.properties[0];save();render();toast('Property deleted')}
+
+/* ============ FORMS ============ */
+function field(l,id,v,type='text',ph=''){return `<div class="field"><label>${l}</label><input id="${id}" value="${esc(v||'')}" type="${type}" placeholder="${ph}"></div>`}
+
+function openBookingModal(id){
+  editId=id;const b=id?DB.bookings.find(x=>x.id===id):{};
+  openModal(id?'Edit Booking':'New Booking',`
+    <div class="row-2">${field('Guest Name','f_guest',b.guest,'text','e.g. Maria Santos')}${field('Room','f_room',b.room,'text','e.g. 205')}</div>
+    <div class="row-3">${field('Check-in','f_cin',b.checkin,'date')}${field('Check-out','f_cout',b.checkout,'date')}${field('Due Date','f_due',b.due,'date')}</div>
+    <div class="row-2">${field('Total Amount','f_total',b.total,'number','0')}${field('Amount Paid','f_paid',b.paid,'number','0')}</div>
+    <div class="modal-foot"><button class="btn btn-ghost" onclick="closeModal()">Cancel</button><button class="btn btn-gold" onclick="saveBooking()">Save Booking</button></div>`);
+}
+function saveBooking(){
+  const d={guest:val('f_guest'),room:val('f_room'),checkin:val('f_cin'),checkout:val('f_cout'),due:val('f_due'),total:+val('f_total')||0,paid:+val('f_paid')||0,prop:DB.activeProp};
+  if(!d.guest){toast('Enter guest name');return}
+  if(editId){const b=DB.bookings.find(x=>x.id===editId);d.receipts=b.receipts||[];Object.assign(b,d)}
+  else{d.id=uid();d.receipts=[];if(d.paid>0)d.receipts.push({n:'R-'+String(1000+(countReceipts()+1)).slice(-4),amt:d.paid,date:new Date().toISOString().slice(0,10)});DB.bookings.push(d)}
+  save();render();closeModal();toast('Booking saved!')
+}
+
+function openGuestModal(){
+  editId=null;
+  openModal('Add Guest',`
+    ${field('Guest Name','f_gname','','text')}
+    <div class="row-2">${field('Phone','f_gphone','','text')}${field('Email','f_gemail','','email')}</div>
+    <div class="field"><label>Notes</label><textarea id="f_gnote" rows="3"></textarea></div>
+    <div class="modal-foot"><button class="btn btn-ghost" onclick="closeModal()">Cancel</button><button class="btn btn-gold" onclick="saveGuest()">Save Guest</button></div>`);
+}
+function saveGuest(){const d={id:uid(),name:val('f_gname'),phone:val('f_gphone'),email:val('f_gemail'),note:document.getElementById('f_gnote').value,prop:DB.activeProp};if(!d.name){toast('Enter guest name');return}DB.guests.push(d);save();render();closeModal();toast('Guest saved!')}
+
+function val(id){return document.getElementById(id).value}
+
+/* ============ DATA OPS ============ */
+function exportData(){const blob=new Blob([JSON.stringify(DB,null,2)],{type:'application/json'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='hotel-perla-san-franz-backup-'+new Date().toISOString().slice(0,10)+'.json';a.click();toast('Backup exported!')}
+function resetAll(){if(!confirm('Reset ALL data? Cannot be undone.'))return;localStorage.removeItem(KEY);location.reload()}
+
+/* live search */
+['searchBookings','searchGuests','searchReceipts'].forEach(id=>{const el=document.getElementById(id);if(el)el.addEventListener('input',render)});
+
+/* ============ INIT ============ */
+load();
+render();go('dashboard');
+save();
+
+/* ============ SAVE ON EXIT ============ */
+/* Belt-and-suspenders: every action already saves immediately, but this
+   guarantees a final flush to localStorage no matter how the page closes. */
+window.addEventListener('beforeunload',save);
+window.addEventListener('pagehide',save);
+document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='hidden')save()});
+</script>
+</body>
+</html>
